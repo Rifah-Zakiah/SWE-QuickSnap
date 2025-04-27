@@ -1,3 +1,4 @@
+
 ﻿using System;
 using SwinGameSDK;
 
@@ -9,7 +10,7 @@ using NUnit.Framework;
 namespace CardGames.GameLogic
 {
 	/// <summary>
-	/// The Snap card game in which the user scores a point if they
+	/// The Snap card game in which =the user scores a point if they
 	/// click when the rank of the last two cards match.
 	/// </summary>
 	public class Snap
@@ -37,6 +38,7 @@ namespace CardGames.GameLogic
 		public Snap ()
 		{
 			_deck = new Deck ();
+			_gameTimer = SwinGame.CreateTimer ();
 		}
 
 		/// <summary>
@@ -91,7 +93,8 @@ namespace CardGames.GameLogic
 				_started = true;
 				_deck.Shuffle ();		// Return the cards and shuffle
 
-				FlipNextCard ();		// Flip the first card...
+				FlipNextCard ();
+				_gameTimer.Start();		// Flip the first card...
 			}
 		}
 			
@@ -111,7 +114,11 @@ namespace CardGames.GameLogic
 		/// </summary>
 		public void Update()
 		{
-			//TODO: implement update to automatically slip cards!
+			if (_gameTimer.Ticks > _flipTime)
+			{
+				_gameTimer.Reset ();
+				FlipNextCard ();
+			}
 		}
 
 		/// <summary>
@@ -143,6 +150,7 @@ namespace CardGames.GameLogic
 
 			// stop the game...
 			_started = false;
+			_gameTimer.Stop ();
 		}
 	
 		#region Snap Game Unit Tests
